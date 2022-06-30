@@ -34,7 +34,7 @@ class Producer:
     def producer_send_data(self):
         # # add_callback() calls on_send_success so that if the
         # producer is successful, the metadata will be displayed
-        self.producer.send('payments.principals', value=PAYEE_DATA).add_callback(self.on_send_success).add_errback(
+        self.producer.send('payments.principals', value=PAYEE_DATA, partition=1).add_callback(self.on_send_success).add_errback(
             self.on_send_error)
 
     def flush_producer(self):
@@ -43,7 +43,6 @@ class Producer:
             f'Producing message @ {date.today()} | Message = {str("Sending message for partition: " + json_payload.first_name + " " + json_payload.last_name)}')
 
         # Flush producer twice to make sure message actually sends
-        self.producer.flush()
         self.producer.flush()
 
     def producer_graceful_exit(self):
